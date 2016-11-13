@@ -4,7 +4,7 @@
   "description": "Quiz Application",
   "main": "src/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/app.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +12,7 @@
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "mongoose": "^4.6.6",
-    "redis": "^2.6.3"
+    "redis": "^2.6.3",
+    "socket.io": "^1.5.1"
   }
 }
