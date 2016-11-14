@@ -95,7 +95,6 @@ router.post('/answer', function(req, res)
         //exit the function
         return;
       }
-
       count.right = parseInt(rightCount, 10) || 0;
     })
     if(userAnswer.answer == question.answer)

@@ -39,13 +39,12 @@ io.sockets.on('connection', function(client) {
     });
 
     client.on('answer', function(answer){
-
-      //TODO include user name and broadcast witht the user's answer. 
-
+      // TODO include user name and broadcast with the user's answer.
+      // TODO update REDIS correct answer count. Include this with the answer annoucement?
       // emit the answer to all clients the user's answer.
+      console.log('Here is the user\'s answer: ' + answer);
       io.emit('answer_announcement', answer);
     });
-
 
 });
 
