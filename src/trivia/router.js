@@ -1,4 +1,4 @@
-//'use strict';
+//==============================================================================
 
 var express = require('express');
 var Question = require('../models/question');
@@ -12,7 +12,7 @@ var client = redis.createClient();
 
 counts.right = 0;
 
-
+//==============================================================================
 //Returns a single trivia question:
 /* { "question": "Who was the first computer programmer?",
     "answerId": 1 }
@@ -41,6 +41,8 @@ router.get('/question', function(req, res) {
   });
 });
 
+
+//==============================================================================
 //Creates a new trivia question:
 /*{ "question": "Who led software development for NASA's Apollo missions?",
   "answer": "Margaret Hamilton" }
@@ -55,6 +57,9 @@ router.post('/question', function(req, res) {
   });
 });
 
+
+
+//==============================================================================
 router.put('/questions/:id', function(req, res) {
   var id = req.params.id;
   var question = req.body;
@@ -72,9 +77,8 @@ router.put('/questions/:id', function(req, res) {
 });
 
 
-//var counts = {};
-//counts.
-//user needs to post answerId
+
+//==============================================================================
 router.post('/answer', function(req, res)
 {
   //get user answer from browser
@@ -109,7 +113,7 @@ router.post('/answer', function(req, res)
     {
       client.incr("right");
       count.right = counts.right + 1;
-      return res.json(JSON.stringify({ "correct" : true})); // res.json doesn't convert javascript object to json, it must be stringified. 
+      return res.json(JSON.stringify({ "correct" : true})); // res.json doesn't convert javascript object to json, it must be stringified.
     } else
     {
       client.incr("wrong");
@@ -121,4 +125,32 @@ router.post('/answer', function(req, res)
 });
 
 
+//==============================================================================
+router.get('/score', function(req, res){
+  /* format response like so:
+    {
+    right: 2,
+    wrong: 1
+  }
+  */
+
+  // get wrong and right from computer, computer knows all.
+  // get from redis is asynchronous so send data in callback.
+  client.mget("right", "wrong", function(err, scoreData){
+      var rightScore = scoreData[0]; // right score
+      var wrongScore = scoreData[1]; // wrong score
+
+      // data to return.
+      var score = {
+        right: rightScore,
+        wrong: wrongScore
+      }
+
+      // send score data
+      res.json(JSON.stringify(score));
+  });
+});
+//==============================================================================
+
 module.exports = router;
+//==============================================================================

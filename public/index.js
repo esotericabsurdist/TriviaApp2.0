@@ -9,7 +9,7 @@ var main = function() {
 
   //============================================================================
   //
-  //        ********** Onclick Listeners **********
+  //            ********** Onclick Listeners ***********
   //
   //============================================================================
   // join user to trivia game.
@@ -62,10 +62,37 @@ var main = function() {
   //============================================================================
   document.getElementById('get_question').onclick = function(){
     // make an ajax GET to our API for a random question.
-    get_question();
+    update_question();
+  }
+
+
+
+  //============================================================================
+  //
+  //            ********** Helper Functions ***********
+  //
+  //============================================================================
+  var update_score = function() {
+
+    $.ajax({
+      url: '/score',
+      type: 'GET',
+      dataType: "json",
+      success: function(score){
+
+          if(score != null){
+            // tell the server the current score.
+            socket.emit('score', score);
+          }
+          else{
+            // just print something.
+            document.getElementById('question').innerHTML = "null response, something went wrong.";
+          }
+      }
+    });
   }
   //============================================================================
-  var get_question = function (){
+  var update_question = function (){
     // send a GET request to our api for a random question.
     $.ajax({
       url: '/question',
@@ -93,12 +120,12 @@ var main = function() {
 
   //============================================================================
   //
-  //        ********** Socket Listeners **********
+  //                ********** Socket Listeners **********
   //
   //============================================================================
 
   // when the server emits a new user update, update the online user list.
-  socket.on('new_user', function(user){
+  socket.on('new_user_announcement', function(user){
     // add the username to the users list
     var li = document.createElement('li');
     li.appendChild(document.createTextNode(user.name));
@@ -126,24 +153,36 @@ var main = function() {
   //============================================================================
   // when the server emits the correctness of answer and the user who posted it, update the view.
   socket.on('answer_announcement', function(answer_data){
-    //TODO write th user's name to the name text in the view.
-
     if(answer_data != null){
       console.log(answer_data);
       var answer = JSON.parse(answer_data);
       // write the users answer to the answer text in the view.
-      document.getElementById('user_answer_correctness').innerHTML = answer.correct;
-      document.getElementById('user_who_submitted_answer').innerHTML = answer.user_name;
+      document.getElementById('user_who_submitted_answer').innerHTML = 'Submitted by: ' + answer.user_name;
+      document.getElementById('user_answer_correctness').innerHTML = 'Answer is correct:' + answer.correct;
+
+      // now that the answer has been updated, send update the score request to sever to update all the client's views with score.
+      update_score();
     }
     else {
       document.getElementById('user_answer_correctness').innerHTML = "user submitted answer, null response from server";
     }
   });
   //============================================================================
-}
 
+  // when the server emits the new score data, update the view.
+  socket.on('score_announcement', function(score_data){
+    if(score_data != null){
+      // convert the JSON to a usable JS object.
+      var score = JSON.parse(score_data);
 
+      // set the scores into the view.
+      document.getElementById('right_score').innerHTML = 'Right Answers: ' + score.right;
+      document.getElementById('wrong_score').innerHTML = 'Wrong Answers: ' + score.wrong;
 
+    }
+  });
+  //============================================================================
+} // end of main.
 //==============================================================================
 $(document).ready(main);
 //==============================================================================
