@@ -109,7 +109,7 @@ router.post('/answer', function(req, res)
     {
       client.incr("right");
       count.right = counts.right + 1;
-      return res.json(JSON.stringify({ "correct" : true}));
+      return res.json(JSON.stringify({ "correct" : true})); // res.json doesn't convert javascript object to json, it must be stringified. 
     } else
     {
       client.incr("wrong");

@@ -113,13 +113,19 @@ var main = function() {
   });
 
   // when the server emits the correctness of answer, update the view.
-  socket.on('answer_announcement', function(answer){
+  socket.on('answer_announcement', function(answer_data){
     //TODO write th user's name to the name text in the view.
 
-    console.log("Here is the answer emitted by the server: "+answer);
+    if(answer_data != null){
+      console.log(answer_data);
+      var answer = JSON.parse(answer_data);
+      // write the users answer to the answer text in the view.
+      document.getElementById('user_submitted_answer').innerHTML = answer.correct;
+    }
+    else {
+      document.getElementById('user_submitted_answer').innerHTML = "user submitted answer, null response from server";
+    }
 
-    // write the users answer to the answer text in the view.
-    //document.getElementById('user_answer').innerHTML = answer.;
   });
 
 
