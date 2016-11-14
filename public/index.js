@@ -29,7 +29,7 @@ var main = function() {
 
     // build a json object to send to the api.
     //var answer = JSON.stringify({'answer': user_answer});
-    var answer = {'answer': user_answer};
+    var answer = JSON.stringify({'answer': user_answer, '_id': ANSWER_ID});
     // send a POST request to our api to check the user's answer is correct.
     $.ajax({
       url: '/answer',
@@ -91,8 +91,12 @@ var main = function() {
   // when the server emits a trivia_announcement, post the trivia questions in the view.
   socket.on('trivia_announcement', function(trivia){
     if(trivia != null){
+
       // update the html with our trivia.
       document.getElementById('trivia_question').innerHTML = trivia.question;
+
+      // save the id.
+      ANSWER_ID = trivia._id;
     }
     else{
       document.getElementById('trivia_question').innerHTML = "null response, something went wrong.";
