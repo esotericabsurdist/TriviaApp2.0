@@ -80,7 +80,9 @@ router.post('/answer', function(req, res)
   //get user answer from browser
   var userAnswer = req.body;
 
-  Question.findById(userAnswer._id, function(err, question)
+  console.log(userAnswer);
+
+  Question.findById(userAnswer.answerID, function(err, question)
   {
     var count = {};
     if (err){
@@ -90,15 +92,13 @@ router.post('/answer', function(req, res)
       //check to make sure there's no error
       if (err!==null){
         console.log("ERROR: " + err);
-
         //exit the function
         return;
       }
 
       count.right = parseInt(rightCount, 10) || 0;
-
     })
-    if(userAnswer.answer === question.answer)
+    if(userAnswer.answer == question.answer)
     {
       client.incr("right");
       count.right = counts.right + 1;
