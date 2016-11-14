@@ -1,8 +1,13 @@
 var main = function() {
 
+  // user name.
+  var USER_NAME = null;
+  var ANSWER_ID = null;
+
   // setup connection
   var socket = io.connect('http://localhost:4200');
 
+  //        ********** Onclick Listeners **********
 
   // join user to trivia game.
   document.getElementById('submit_user_name_button').onclick = function() {
@@ -12,30 +17,41 @@ var main = function() {
     // if the user name is in the field, join them.
     if( !(user_name == "" || user_name == null) ){
 
-      // Send the user.
-      socket.emit('join', {name: user_name});
+      // Send the user the server.
+      socket.emit('join_user', {name: user_name});
     }
   }
 
-
-
   // submit trivia answer
   document.getElementById('submit_trivia_answer_button').onclick = function(){
-    //TODO
-    // ajax post to /answer.
-    // Get result in call back: {correct: true || false}
-    // socket.emit('user_answer_status' {correct: true || false, name: user_name})
-    //
-  }
+    // get user's answer from input field.
+    var user_answer = document.getElementById('user_answer').value;
 
+    // build a json object to send to the api.
+    //var answer = JSON.stringify({'answer': user_answer});
+    var answer = {'answer': user_answer};
+    // send a POST request to our api to check the user's answer is correct.
+    $.ajax({
+      url: '/answer',
+      type: 'POST',
+      data: answer,
+      dataType: "json",
+      success: function(answer){
+          // answer data has this format: { "correct" : true}
+
+          // TODO include user name
+
+          // tell server the question has been answered and send the answer.
+          socket.emit('answer', answer);
+        }
+    });
+  }
 
 
   document.getElementById('get_question').onclick = function(){
     // make an ajax GET to our API for a random question.
     get_question();
   }
-
-
 
   var get_question = function (){
     // send a GET request to our api for a random question.
@@ -46,26 +62,25 @@ var main = function() {
       success: function(trivia){
 
           if(trivia != null){
-          // just for testing, set the equestion into the page.
-          document.getElementById('trivia_question').innerHTML = trivia.question;
-
-          // TODO emit new question to all users.
+            // tell the server that there is a new question.
+            socket.emit('question', trivia);
           }
           else{
-            document.getElementById('question').innerHTML = "null response, try again";
+            document.getElementById('question').innerHTML = "null response, something went wrong.";
           }
       }
-    }, false);
+    });
   }
 
 
 
 
-  // update the user list when a new user joins.
+
+
+  //        ********** Socket Listeners **********
+
+  // when the server emits a new user update, update the online user list.
   socket.on('new_user', function(user){
-
-    document.getElementById("trivia_question").innerHTML = "asdfasdfj;asdf;ajsdf;ljasdf;lj"
-
     // add the username to the users list
     var li = document.createElement('li');
     li.appendChild(document.createTextNode(user.name));
@@ -73,7 +88,26 @@ var main = function() {
   });
 
 
+  // when the server emits a trivia_announcement, post the trivia questions in the view.
+  socket.on('trivia_announcement', function(trivia){
+    if(trivia != null){
+      // update the html with our trivia.
+      document.getElementById('trivia_question').innerHTML = trivia.question;
+    }
+    else{
+      document.getElementById('trivia_question').innerHTML = "null response, something went wrong.";
+    }
+  });
+
+  // when the server emits the correctness of answer, update the view.
+  socket.on('answer_announcement', function(answer){
+    //TODO write th user's name to the name text in the view.
+
+    // write the users answer to the answer text in the view.
+    document.getElementById('user_answer').innerHTML = answer.correct;
+  });
 
 
-};
+}
+
 $(document).ready(main);

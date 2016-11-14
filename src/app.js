@@ -28,18 +28,25 @@ io.sockets.on('connection', function(client) {
     console.log('Client connected...');
 
     //if client says 'join', get their data broadcast it to all other sockets so that online user's will be updated.
-    client.on('join', function(user) {
-
-        // print to console.
-        console.log("adding user: "+user.name);
-
-        // broadcast emit to all other online users except for the sender. DOES NOT WORK!?
-        //client.broadcast.emit('new_user', user);
-
+    client.on('join_user', function(user) {
         // emit new user to all
         io.emit('new_user', user);
-
     });
+
+    client.on('question', function(trivia){
+      // emit new question to all
+      io.emit('trivia_announcement', trivia);
+    });
+
+    client.on('answer', function(answer){
+
+      //TODO include user name and broadcast witht the user's answer. 
+
+      // emit the answer to all clients the user's answer.
+      io.emit('answer_announcement', answer);
+    });
+
+
 });
 
 
