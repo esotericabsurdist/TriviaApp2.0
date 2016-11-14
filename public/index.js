@@ -40,8 +40,7 @@ var main = function() {
     // add the username to the users list
     var li = document.createElement('li');
     li.appendChild(document.createTextNode(user.name));
-    document.getElementById('online_users').appendChild(li);
-    
+    document.getElementById('online_users').appendChild(li);  
   });
 
 

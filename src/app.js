@@ -35,7 +35,7 @@ io.sockets.on('connection', function(client) {
         console.log("adding user: "+user.name);
 
         // broadcast emit to all other online users.
-        client.broadcast.emit('new_user', user);
+        client.emit('new_user', user);
     });
 
 });
