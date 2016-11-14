@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 
 var express = require('express');
 var Question = require('../models/question');
@@ -81,11 +81,13 @@ router.post('/answer', function(req, res)
   var userAnswer = req.body;
 
   // print user's answer and the id.
-  console.log("here is the user answer:"+userAnswer);
+  console.log("here is the user answer:");
+  console.log(userAnswer);
 
   // if the user posts incorrect data, just send an empty response.
   if(userAnswer == null){
     res.end();
+    return;
   }
 
   Question.findById(userAnswer.answerID, function(err, question)
@@ -107,12 +109,12 @@ router.post('/answer', function(req, res)
     {
       client.incr("right");
       count.right = counts.right + 1;
-      return res.json({ "correct" : true});
+      return res.json(JSON.stringify({ "correct" : true}));
     } else
     {
       client.incr("wrong");
       count.wrong = counts.wrong + 1;
-      return res.json({"correct" : false});
+      return res.json(JSON.stringify({"correct" : false}));
     }
   })
 

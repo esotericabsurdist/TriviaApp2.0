@@ -1,8 +1,8 @@
-var main = function() {
+// user name.
+//USER_NAME = 0;
+//ANSWER_ID = 0;
 
-  // user name.
-  var USER_NAME = null;
-  var ANSWER_ID = null;
+var main = function() {
 
   // setup connection
   var socket = io.connect('http://localhost:4200');
@@ -25,28 +25,32 @@ var main = function() {
   // submit trivia answer
   document.getElementById('submit_trivia_answer_button').onclick = function(){
     // get user's answer from input field.
-    var user_answer = document.getElementById('user_answer').value;
+    var answer_text = document.getElementById('user_answer_text').value;
 
-    // build a json object to send to the api.
-    //var answer = JSON.stringify({'answer': user_answer});
+    console.log("here is the anser ID inside submit answer: "+window.ANSWER_ID);
 
-    //var answer = JSON.stringify({'answer': user_answer, 'answerID': ANSWER_ID});
-    var answer = {"answerID": ANSWER_ID, "answer": user_answer}
+    // build object to send to the api.
+    var answer_data = {
+      "answerID": window.ANSWER_ID,
+      "answer": answer_text
+    }
 
-    // send a POST request to our api to check the user's answer is correct.
+    console.log(answer_data);
+
+    // send a POST request to our api to check if the user's answer is correct.
     $.ajax({
       url: '/answer',
       type: 'POST',
-      data: JSON.stringify(answer),
+      data: JSON.stringify(answer_data),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function(answer_response){
-          // /answer returns data in this format: { "correct" : true}
+          // posts to /answer returns answer_response in this format: { "correct" : true}
 
-          // TODO include user name
+          console.log("here is the the response of posting the answer: "+answer_response);
 
           // tell server the question has been answered and send the answer.
-          socket.emit('answer', answer);
+          socket.emit('answer', answer_response);
         }
     });
   }
@@ -66,9 +70,6 @@ var main = function() {
       success: function(trivia){
 
           if(trivia != null){
-            // save the trivia id
-            ANSWER_ID = trivia.answerID;
-
             // tell the server that there is a new question.
             socket.emit('question', trivia);
           }
@@ -103,7 +104,8 @@ var main = function() {
       document.getElementById('trivia_question').innerHTML = trivia.question;
 
       // save the id.
-      ANSWER_ID = trivia._id;
+      window.ANSWER_ID = trivia.answerID;
+
     }
     else{
       document.getElementById('trivia_question').innerHTML = "null response, something went wrong.";
@@ -114,8 +116,10 @@ var main = function() {
   socket.on('answer_announcement', function(answer){
     //TODO write th user's name to the name text in the view.
 
+    console.log("Here is the answer emitted by the server: "+answer);
+
     // write the users answer to the answer text in the view.
-    document.getElementById('user_answer').innerHTML = answer.correct;
+    //document.getElementById('user_answer').innerHTML = answer.;
   });
 
 

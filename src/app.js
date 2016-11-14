@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 //configuring dependencies file
 var express = require('express');
 var parser = require('body-parser');
