@@ -3,7 +3,7 @@
 var express = require('express');
 var parser = require('body-parser');
 var router = require('./trivia/router.js');
-
+var redis = require("redis"); //require redis module
 var app = express();
 
 //run these scripts in order they are required
@@ -34,8 +34,13 @@ io.sockets.on('connection', function(client) {
         // print to console.
         console.log("adding user: "+user.name);
 
-        // broadcast emit to all other online users.
-        client.emit('new_user', user);
+        // broadcast emit to all other online users except for the sender. DOES NOT WORK!?
+        //client.broadcast.emit('new_user', user);
+
+        // emit new user to all
+        io.emit('new_user', user);
+
     });
+
 
 });
