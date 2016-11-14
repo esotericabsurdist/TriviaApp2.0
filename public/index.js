@@ -47,7 +47,7 @@ var main = function() {
 
           if(trivia != null){
           // just for testing, set the equestion into the page.
-          document.getElementById('question').innerHTML = trivia.question;
+          document.getElementById('trivia_question').innerHTML = trivia.question;
 
           // TODO emit new question to all users.
           }
@@ -55,7 +55,7 @@ var main = function() {
             document.getElementById('question').innerHTML = "null response, try again";
           }
       }
-    });
+    }, false);
   }
 
 
