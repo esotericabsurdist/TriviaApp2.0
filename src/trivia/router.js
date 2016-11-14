@@ -35,7 +35,7 @@ router.get('/question', function(req, res) {
                 //http://www.w3schools.com/js/js_json_intro.asp
                 // key        //value
                 "question" : questions.question,
-                'answerID' :questions._id
+                "answerID" :questions._id
               });
     });
   });
@@ -80,7 +80,13 @@ router.post('/answer', function(req, res)
   //get user answer from browser
   var userAnswer = req.body;
 
-  console.log(userAnswer);
+  // print user's answer and the id.
+  console.log("here is the user answer:"+userAnswer);
+
+  // if the user posts incorrect data, just send an empty response.
+  if(userAnswer == null){
+    res.end();
+  }
 
   Question.findById(userAnswer.answerID, function(err, question)
   {

@@ -29,15 +29,19 @@ var main = function() {
 
     // build a json object to send to the api.
     //var answer = JSON.stringify({'answer': user_answer});
-    var answer = JSON.stringify({'answer': user_answer, '_id': ANSWER_ID});
+
+    //var answer = JSON.stringify({'answer': user_answer, 'answerID': ANSWER_ID});
+    var answer = {"answerID": ANSWER_ID, "answer": user_answer}
+
     // send a POST request to our api to check the user's answer is correct.
     $.ajax({
       url: '/answer',
       type: 'POST',
-      data: answer,
+      data: JSON.stringify(answer),
+      contentType: "application/json; charset=utf-8",
       dataType: "json",
-      success: function(answer){
-          // answer data has this format: { "correct" : true}
+      success: function(answer_response){
+          // /answer returns data in this format: { "correct" : true}
 
           // TODO include user name
 
@@ -62,6 +66,9 @@ var main = function() {
       success: function(trivia){
 
           if(trivia != null){
+            // save the trivia id
+            ANSWER_ID = trivia.answerID;
+
             // tell the server that there is a new question.
             socket.emit('question', trivia);
           }
