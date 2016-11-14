@@ -30,6 +30,35 @@ var main = function() {
 
 
 
+  document.getElementById('get_question').onclick = function(){
+    // make an ajax GET to our API for a random question.
+    get_question();
+  }
+
+
+
+  var get_question = function (){
+    // send a GET request to our api for a random question.
+    $.ajax({
+      url: '/question',
+      type: 'GET',
+      dataType: "json",
+      success: function(trivia){
+
+          if(trivia != null){
+          // just for testing, set the equestion into the page.
+          document.getElementById('question').innerHTML = trivia.question;
+
+          // TODO emit new question to all users.
+          }
+          else{
+            document.getElementById('question').innerHTML = "null response, try again";
+          }
+      }
+    });
+  }
+
+
 
 
   // update the user list when a new user joins.
@@ -40,7 +69,7 @@ var main = function() {
     // add the username to the users list
     var li = document.createElement('li');
     li.appendChild(document.createTextNode(user.name));
-    document.getElementById('online_users').appendChild(li);  
+    document.getElementById('online_users').appendChild(li);
   });
 
 

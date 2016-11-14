@@ -3,12 +3,11 @@
 var express = require('express');
 var parser = require('body-parser');
 var router = require('./trivia/router.js');
-var redis = require("redis"); //require redis module
 var app = express();
 
 //run these scripts in order they are required
 require('./database');
-require('./seed');
+require('./seed'); // populate mongo database with some trivia.
 
 app.use('/', express.static('public'));
 app.use(parser.json());
@@ -41,6 +40,9 @@ io.sockets.on('connection', function(client) {
         io.emit('new_user', user);
 
     });
+});
 
 
+io.sockets.on('disconnect', function(client) {
+    console.log('Client disconnected...');
 });
