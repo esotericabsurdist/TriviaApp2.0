@@ -19,7 +19,6 @@ app.listen(3000, function() {
   console.log("The server is running on port 3000");
 });
 
-
 //socket io server
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
@@ -29,9 +28,14 @@ io.sockets.on('connection', function(client) {
 
     console.log('Client connected...');
 
-    //if client says 'join', get their data and print it to the console.
-    client.on('join', function(data) {
-        console.log(data);
+    //if client says 'join', get their data broadcast it to all other sockets so that online user's will be updated.
+    client.on('join', function(user) {
+
+        // print to console.
+        console.log("adding user: "+user.name);
+
+        // broadcast emit to all other online users.
+        client.broadcast.emit('new_user', user);
     });
 
 });
