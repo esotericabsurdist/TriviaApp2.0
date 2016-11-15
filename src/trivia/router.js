@@ -61,27 +61,58 @@ router.post('/question', function(req, res) {
 
 
 //==============================================================================
-// update an existing question.
-router.put('/questions/:id', function(req, res) {
-  var id = req.params.id;
-  var question = req.body;
-
-  if (question && question._id !== id ) {
-    return res.status(500).json({ err: "Ids don't match!"})
-  }
-
-  Question.findByIdAndUpdate(id, question, { new: true }, function(err, question){
-    if (err) {
-      return res.status(500).json({err: err.message});
+// update an existing question. API calls for POST, we use PUT for convention.
+/* Should receive this format. and insert to mongo db as per schema.
+    {
+      question: "Who led software development for NASA's Apollo lunar mission?",
+      answer: "Margaret Hamilton"
     }
-    res.json({'question' : question, message: 'Question Updated'});
-  });
+    */
+//router.put('/questions/:id', function(req, res) {
+router.post('/question', function(req, res) {
+      /* Should receive this format. and insert to mongo db as per schema.
+      {
+        question: "Who led software development for NASA's Apollo lunar mission?",
+        answer: "Margaret Hamilton"
+      }
+      */
+      // Get data:
+      var questionText = req.body.question;
+      var answerText = req.body.answer;
+      var answerId = null;
+
+      Question.find({}).count(function(err, numberQuestions){
+          // set proper question id.
+          answerId = numberQuestions + 1;
+
+          console.log(answerId);
+
+
+          // build question to insert based on schema.
+          var newQuestion =
+          {
+            question: questionText,
+            answer: answerText,
+          }
+
+          // insert to mongoDB, this is asynchronous. The create method adds version keys.
+          Question.create(newQuestion, function(err, data){
+            if(err){
+              console.log(err)
+              res.end();
+            }
+            else{
+              console.log("Inserted New Question");
+              res.end();
+            }
+          });
+      });
 });
 
 
 
 //==============================================================================
-// receives an answer. 
+// receives an answer.
 router.post('/answer', function(req, res)
 {
   //get user answer from browser
