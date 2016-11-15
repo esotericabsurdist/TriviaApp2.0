@@ -1,9 +1,12 @@
 //===================================================================================
+// app.js
+//===================================================================================
 //configuring dependencies file
 var express = require('express');
 var parser = require('body-parser');
 var router = require('./trivia/router.js');
 var app = express();
+
 //===================================================================================
 //run these scripts in order they are required
 require('./database');

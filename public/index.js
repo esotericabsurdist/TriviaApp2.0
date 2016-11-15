@@ -1,10 +1,9 @@
-// user name.
-//USER_NAME = 0;
-//ANSWER_ID = 0;
-
+//==============================================================================
+// index.js
+//==============================================================================
 var main = function() {
 
-  // setup connection.
+  // setup connection on page loaded.
   var socket = io.connect('http://localhost:4200');
 
   //============================================================================
@@ -12,7 +11,7 @@ var main = function() {
   //            ********** Onclick Listeners ***********
   //
   //============================================================================
-  // join user to trivia game.
+  // join user to trivia game upon join button click.
   document.getElementById('submit_user_name_button').onclick = function() {
     // get username.
     var user_name = document.getElementById('user_name').value;
@@ -28,7 +27,7 @@ var main = function() {
   }
 
   //============================================================================
-  // submit trivia answer
+  // submit trivia answer on submit button click.
   document.getElementById('submit_trivia_answer_button').onclick = function(){
     // get user's answer from input field.
     var answer_text = document.getElementById('user_answer_text').value;
@@ -47,7 +46,7 @@ var main = function() {
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function(answer_correctness){
-          // build an object to store the user's name and the corrrectness.
+          // build an object to store the user's name and the corrrectness of their answer.
           // posts to /answer returns answer_response in this format: { "correct" : true}
           var user_answer = {
             "user_name": window.USER_NAME,

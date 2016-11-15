@@ -1,5 +1,6 @@
 //==============================================================================
-
+// router.js
+//==============================================================================
 var express = require('express');
 var Question = require('../models/question');
 var redis = require("redis"); //require redis module
@@ -60,6 +61,7 @@ router.post('/question', function(req, res) {
 
 
 //==============================================================================
+// update an existing question.
 router.put('/questions/:id', function(req, res) {
   var id = req.params.id;
   var question = req.body;
@@ -79,6 +81,7 @@ router.put('/questions/:id', function(req, res) {
 
 
 //==============================================================================
+// receives an answer. 
 router.post('/answer', function(req, res)
 {
   //get user answer from browser
