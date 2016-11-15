@@ -16,7 +16,7 @@ data from an API we built locally, and and sockets to update the client's views.
 3. Run the following commands:
   'npm install'
   'npm redis-server &'
-  'npm mongod --dbpath <YOUR_PATH_TO_A_DATA_FOLDER> &'
+  'npm mongod --dbpath YOUR_PATH_TO_DATA_FOLDER &'
   'npm start'
  
 If redis and mongo servers are running, the application should be running on port 3000. eg. (localhost:3000)
